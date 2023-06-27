@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="submit.css">
+    <title>Document</title>
+</head>
+<body><form action="" class="login">
+    <p>USers' information</p>
+    <div class="login-box">
+        <input type="text" placeholder="Username">
+    </div>
+    <div class="login-box">
+        <input type="text" placeholder="Email">    
+    </div>
+    <div class="login-box">
+        <input type="text" placeholder="Artist-bio" id="">
+    </div>
+    <h1> Submmiting your avatar by using below botton!</h1>
+        <input type="file" name="file" multiple id="file" accept="image/*">
+        
+        <div id="box">
+         <button type="submit">Submit</button>
+         <script>
+            var file = document.querySelector("#file");
+            var fileUpload = document.querySelector("#fileUpload");
+            var box = document.querySelector("#box");
+            file.addEventListener("change",async function(){
+                const inp = document.getElementById("file");
+                if (inp.files.length === 0) {
+                    alert("请选择上传文件")
+                    return false;
+                }
+                // 这里的请求体自己构建比较麻烦,一般使用HTML5里面的formData来构建
+                const formData = new FormData();
+                for (let i = 0; i < inp.files.length; i++) {
+                    formData.append('files', inp.files[i])
+                }
+                const url = "/upload-photos";
+                const resp = await fetch(url, {
+                    method: "POST",
+                    body: formData //自动修改请求头,formdata的默认请求头的格式是 multipart/form-data
+                })
+                const res = await resp.json();
+                if(res.code === 1){
+                    alert("上传成功,图片名字为:"+res.msg.reduce((prev,curr)=>{
+                        prev += curr.filename+",";
+                        return prev;
+                    },''))
+                }
+            })
+        
+         </script>
+        </div>
+
+</form>
+    
+</body>
+</html>
